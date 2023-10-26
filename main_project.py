@@ -133,3 +133,23 @@ if __name__ == '__main__':
     plt.ylabel('Aerodynamic Force (N)')
     plt.title('Aerodynamic Forces on Rear Wings')
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    
+    
+# if __name__ == '__main__':
+#     velocity = [0]
+#     distance = [0]
+#     acceleration = []
+#     max_distance = 1000
+#     while distance[-1] <= max_distance
+#         FEM_module(velocity)
+#         acceleration.append(ForcingFunction())
+#         velocity.append(acceleration * time_step)
+#         distance.append(velocity * time_step)
+    
+#     # output/gui
+#     plt.plot(velocities,lift_areas,label = 'Downforce')
+#     plt.plot(velocities,drag_areas,label = 'Drag')
+#     plt.xlabel('Velocity (m/s)')
+#     plt.ylabel('Aerodynamic Force (N)')
+#     plt.title('Aerodynamic Forces on Rear Wings')
+#     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))

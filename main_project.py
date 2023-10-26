@@ -146,7 +146,7 @@ if __name__ == '__main__':
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
 #def ForcingFunction()
-    #acceleration = (1/m)*((745.7*p_e*t_e/velocity)-0.5*(c_dc*A_c*air_density*(velocity**2))-drag_area-c_rr*(lift_area + m*g)
+    #acceleration = (1/m)*((745.7*p_e*t_e/velocity)-0.5*(c_dc*A_c*air_density*(velocity**2))-drag_area-c_rr*(lift_area + m*g))
     #o_p = (velocity*s_f/(745.7*t_e))*(lift_area+0.5*m*g)
     #optimal_power.append(o_p)
     #return acceleration

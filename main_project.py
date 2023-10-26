@@ -17,6 +17,16 @@ clalpha_defined = 2 * np.pi
 cd_0 = 0.008
 chord = 0.30  # m
 span = 1.00  # m
+#m = 798 # mass kg
+#d_w = 3.6 # wheelbasse m
+#r = 0.23 # tire radius m
+#p_e = 850 # brake horsepower Hp
+#t_e = 0.98 # transmission efficiency
+#s_f = 1 # static friction coefficient between tire and asphalt
+#g = 9.81 # gravity m / s^2
+#c_dc = 0.85 # car drag coefficient
+#A_c = 1.30 # frontal area of car m^2
+#c_rr = 0.012 # rolling resistance coefficient
 
 # Parameters & Calculations
 N = 20  # Number of nodes
@@ -36,6 +46,7 @@ lift_distributions = []
 drag_distributions = []
 lift_areas = []
 drag_areas = []
+#optimal_power = []
 
 def FEM_module(velocity):
     '''
@@ -43,7 +54,7 @@ def FEM_module(velocity):
 
     Parameters
     ----------
-    velocity : numeric
+    velocity : nueric
         This function takes an input velocity, and calculates the resultant
         angle of attacks, lift and drag distributions, and total lift and drag.
         These values are appended to theta_values,lift_distributions,
@@ -133,7 +144,12 @@ if __name__ == '__main__':
     plt.ylabel('Aerodynamic Force (N)')
     plt.title('Aerodynamic Forces on Rear Wings')
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-    
+
+#def ForcingFunction()
+    #acceleration = (1/m)*((745.7*p_e*t_e/velocity)-0.5*(c_dc*A_c*air_density*(velocity**2))-drag_area-c_rr*(lift_area + m*g)
+    #o_p = (velocity*s_f/(745.7*t_e))*(lift_area+0.5*m*g)
+    #optimal_power.append(o_p)
+    #return acceleration
     
 # if __name__ == '__main__':
 #     velocity = [0]

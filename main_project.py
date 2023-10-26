@@ -150,7 +150,7 @@ if __name__ == '__main__':
     #optimal_power.append(p_e)
     #p_e = (velocity*s_f/(745.7*t_e))*(lift_area+0.5*m*g)
     #if p_e > p_max:
-        p_e = p_max
+        #p_e = p_max
     #acceleration = (1/m)*((745.7*p_e*t_e/velocity)-0.5*(c_dc*A_c*air_density*(velocity**2))-drag_area-c_rr*(lift_area + m*g))
     #return acceleration
     

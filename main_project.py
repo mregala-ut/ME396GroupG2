@@ -23,7 +23,7 @@ span = 1.00  # m
 #p_e = 250 # starting brake horsepower Hp
 #p_max = 850 # maximum Hp
 #t_e = 0.98 # transmission efficiency
-#s_f = 1 # static friction coefficient between tire and asphalt
+#s_f = 1.7 # static friction coefficient between tire and asphalt
 #g = 9.81 # gravity m / s^2
 #c_dc = 0.85 # car drag coefficient
 #A_c = 1.30 # frontal area of car m^2
@@ -147,10 +147,10 @@ if __name__ == '__main__':
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
 #def ForcingFunction()
-    #optimal_power.append(p_e)
     #p_e = (velocity*s_f/(745.7*t_e))*(lift_area+0.5*m*g)
     #if p_e > p_max:
         #p_e = p_max
+    #optimal_power.append(p_e)
     #acceleration = (1/m)*((745.7*p_e*t_e/velocity)-0.5*(c_dc*A_c*air_density*(velocity**2))-drag_area-c_rr*(lift_area + m*g))
     #return acceleration
     

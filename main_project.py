@@ -154,7 +154,7 @@ if __name__ == '__main__':
     #if p_e > p_max:
         #p_e = p_max
     #optimal_power.append(p_e)
-    #Initial acceleration based on friction force without lift inserted
+    ##Initial acceleration based on friction force without lift inserted
     #if velocity == 0:
         #acceleration=(1/m)*0.5*s_f*(0.5*m*g)
     #else:

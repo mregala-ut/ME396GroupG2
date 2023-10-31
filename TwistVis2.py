@@ -11,25 +11,6 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.colors import Normalize
 from matplotlib import cm
 
-# inputs - vals, span, chord airfoil_center, init_angle, delta_angle
-vals = []
-for line in open('NACA0012.txt'):
-    n = line.strip().split(' ')  # intake and split by csv
-    # add x,y to list as tuple. crop \n from y
-    vals.append((float(n[0]), float(n[-1][:-1])))
-span = 1.01 # m
-chord = 0.5
-airfoil_center = (0.25,0)
-
-init_angle = -10
-x = np.linspace(-span/2/chord,span/2/chord)
-timesteps = 10
-delta_angle = []
-for i in range(timesteps):
-    delta_angle.append(np.cos(x*np.pi/span*chord)*10*(i/timesteps)) # nose up = positive
-del x
-
-
 def output_function(span,chord,airfoil_center,init_angle,delta_angle):
     def toPlot(span,chord,airfoil_center,init_angle,delta_angle):        
         # calculation and output
@@ -147,14 +128,33 @@ def output_function(span,chord,airfoil_center,init_angle,delta_angle):
     ax1 = fig1.add_subplot(projection='3d')
     plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0])]
     anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(delta_angle)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_displacement.gif', dpi=80, writer='pillow')
+    anim.save('NACA0012_displacement3.gif', dpi=80, writer='pillow')
     
     fig2 = plt.figure()
     ax2 = fig2.add_subplot(projection='3d')
     plot2 = [ax2.plot_surface(xp[0],yp[0],zp[0])]
     anim = FuncAnimation(fig2, update_sp, fargs=(zp,plot2), frames=np.arange(0,len(delta_angle)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_strain.gif', dpi=80, writer='pillow')
+    anim.save('NACA0012_strain3.gif', dpi=80, writer='pillow')
     
 
+if __name__ == '__main__':
+    # inputs - vals, span, chord airfoil_center, init_angle, delta_angle
+    vals = []
+    for line in open('NACA0012.txt'):
+        n = line.strip().split(' ')  # intake and split by csv
+        # add x,y to list as tuple. crop \n from y
+        vals.append((float(n[0]), float(n[-1][:-1])))
+    span = 1.01 # m
+    chord = 0.5
+    airfoil_center = (0.25,0)
 
-output_function(span,chord,airfoil_center,init_angle,delta_angle)
+    init_angle = -10
+    x = np.linspace(-span/2/chord,span/2/chord)
+    timesteps = 10
+    delta_angle = []
+    for i in range(timesteps):
+        delta_angle.append(np.cos(x*np.pi/span*chord)*10*(i/timesteps)) # nose up = positive
+        # delta_angle.append(np.sin(x*2*np.pi/span*chord)*10*(i/timesteps)) # nose up = positive
+        # delta_angle.append(np.sin(x*np.pi/2/span*chord)*45*(i/timesteps)) # nose up = positive
+    del x
+    output_function(span,chord,airfoil_center,init_angle,delta_angle)

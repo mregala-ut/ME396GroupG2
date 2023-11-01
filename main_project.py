@@ -22,6 +22,8 @@ chord = 0.30  # m
 span = 1.00  # m
 airfoil = 'NACA0012.txt'
 airfoil_center = (.25,0)
+max_distance = 2000
+time_step = .5 # s
 
 m = 798 # mass kg
 d_w = 3.6 # wheelbasse m
@@ -290,7 +292,7 @@ def Plots():
         # mappable = plt.cm.ScalarMappable(cmap=cmap1, norm=norm1)
         # mappable.set_array([])  # This line is needed to make the colorbar work
         # colorbar = plt.colorbar(mappable, label='displacement')
-        ax1.set_title("Displacement")
+        ax1.set_title(f"Displacement \ntime: {time[i]:.1f} seconds, distance: {distance[i]:.1f}m, velocity: {velocity[i]:.1f}m/s")
         ax1.set_xlabel('span')
         ax1.set_ylabel('chord')
         ax1.set_zlabel('height')        
@@ -309,7 +311,7 @@ def Plots():
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
     anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_displacement_main.gif', dpi=80, writer='pillow')
+    anim.save('NACA0012_main_displacement.gif', dpi=80, writer='pillow')
     
     def update_sp(i,zp,plot):
 
@@ -345,7 +347,7 @@ def Plots():
         drag.set_3d_properties(0*np.ones(len(xp[i].T[0])))
         
         ax1.axis('equal')
-        ax1.set_title("Strain")
+        ax1.set_title(f"Strain \ntime: {time[i]:.1f} seconds, distance: {distance[i]:.1f}m, velocity: {velocity[i]:.1f}m/s")
         ax1.set_xlabel('span')
         ax1.set_ylabel('chord')        
         
@@ -363,24 +365,38 @@ def Plots():
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
     anim = FuncAnimation(fig1, update_sp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_strain_main.gif', dpi=80, writer='pillow')
+    anim.save('NACA0012_main_strain.gif', dpi=80, writer='pillow')
     
-    # output/gui
-    plt.plot(velocity,lift_areas,label = 'Downforce')
-    plt.plot(velocity,drag_areas,label = 'Drag')
-    plt.xlabel('Velocity (m/s)')
-    plt.ylabel('Aerodynamic Force (N)')
-    plt.title('Aerodynamic Forces on Rear Wings')
-    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    # # output/gui
+    # plt.plot(velocity,lift_areas,label = 'Downforce')
+    # plt.plot(velocity,drag_areas,label = 'Drag')
+    # plt.xlabel('Velocity (m/s)')
+    # plt.ylabel('Aerodynamic Force (N)')
+    # plt.title('Aerodynamic Forces on Rear Wings')
+    # plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
     
-    fig1,axs = plt.subplots(3)
-    fig1.suptitle('Vehicle Motion')
-    axs[0].plot(time,distance,label='Distance')
-    axs[0].set(ylabel='Distance (m)')
-    axs[1].plot(time,velocity,label='Speed')
-    axs[1].set(ylabel='Speed (m/s)')
-    axs[2].plot(time,acceleration,label='Acceleration')
-    axs[2].set(xlabel='time',ylabel='Acceleration (m/s/s)')
+    fig2,axs = plt.subplots(3,2)
+    fig2.suptitle('Vehicle Motion')
+    axs[0,0].plot(time,distance,label='Distance')
+    axs[0,0].set(xlabel='time',ylabel='Distance (m)')
+    axs[0,0].grid()
+    axs[1,0].plot(time,velocity,label='Speed')
+    axs[1,0].set(xlabel='time',ylabel='Speed (m/s)')
+    axs[1,0].grid()
+    axs[2,0].plot(time,acceleration,label='Acceleration')
+    axs[2,0].set(xlabel='time',ylabel='Acceleration (m/s/s)')
+    axs[2,0].grid()
+    axs[0,1].plot(time,lift_areas,label='Lift')
+    axs[0,1].set(xlabel='time',ylabel='Lift (N)')
+    axs[0,1].grid()
+    axs[1,1].plot(time,drag_areas,label='Drag')
+    axs[1,1].set(xlabel='time',ylabel='Drag (N)')
+    axs[1,1].grid()
+    axs[2,1].plot(time,optimal_power,label='Optimal Power')
+    axs[2,1].set(xlabel='time',ylabel='Optimal Power (Hp)')
+    axs[2,1].grid()
+    fig2.set_size_inches((15, 9))
+    fig2.savefig('NACA0012_main_data.png', dpi=80)
 
     
 if __name__ == '__main__':
@@ -388,8 +404,6 @@ if __name__ == '__main__':
     velocity = [velocity_initial]
     distance = [0]
     acceleration = [0]
-    max_distance = 1000
-    time_step = 1 # s
     while distance[-1] <= max_distance:
         time.append(time[-1] + time_step)
         FEM_module(velocity[-1])

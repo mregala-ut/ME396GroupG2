@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import time
 
 
 class Ui_MainWindow(object):
@@ -262,8 +263,12 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         
         #Defines Button Click Function, And Closes Upon Clicking
-        self.Button_1.clicked.connect(self.WriteVals) 
-        self.Button_1.clicked.connect(MainWindow.close) 
+        def button_click():
+            self.WriteVals()
+            time.sleep(2)
+            MainWindow.close()
+            
+        self.Button_1.clicked.connect(button_click)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

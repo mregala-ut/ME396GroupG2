@@ -22,7 +22,7 @@ def FEM_module(velocity):
 
     Parameters
     ----------
-    velocity : nueric
+    velocity : numeric
         This function takes an input velocity, and calculates the resultant
         angle of attacks, lift and drag distributions, and total lift and drag.
         These values are appended to theta_values,lift_distributions,
@@ -31,8 +31,6 @@ def FEM_module(velocity):
     Returns
     -------
     None.
-    
-    Author: Matthew Regala
 
     '''
     q_inf = 1/2 * air_density * velocity**2
@@ -68,23 +66,17 @@ def FEM_module(velocity):
     unknown_values = sp.symbols('unknown_values0:%d' % (N - 1))
     # Construct the full theta array
     theta = [alpha_0_rad] + list(unknown_values) + [alpha_0_rad]
-      
-    
     # Define a list to store equations
     eqn = [None] * N
     
     # Calculate the equations for each row of K_Total
-    # K_Total = sp.Matrix()  # Replace this with your actual K_Total matrix
     for i in range(N):
         K_row = K_Total[i]
-        # Create an equation with a mix of numerical and symbolic data
         equation = sum(K_row[j] * theta[j] for j in range(len(theta)))
         eqn[i] = sp.Eq(equation, 0)
     
-    # Solve for unknown_values
+    # Solve for unknown_values and reconstruct theta array
     solutions = sp.solve(eqn[1:N], unknown_values)
-    
-    # Reconstruct the theta array with the solved values
     theta = [alpha_0_rad] + [solutions[value] for value in unknown_values] + [alpha_0_rad]
     theta_values.append(np.array(theta).astype(np.float64))
     

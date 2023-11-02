@@ -12,50 +12,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.colors import Normalize
 from matplotlib import cm
+import glob
 
-# User Defined
-alpha_0_deg = 10
-velocity_initial = 0
-clalpha_defined = 2 * np.pi
-cd_0 = 0.008
-chord = 0.30  # m
-span = 1.00  # m
-airfoil = 'NACA0012.txt'
-airfoil_center = (.25,0)
-max_distance = 2000
-time_step = .5 # s
-
-m = 798 # mass kg
-d_w = 3.6 # wheelbasse m
-r = 0.23 # tire radius m
-p_e = 0 # engine brake horsepower Hp
-p_max = 850 # maximum brake horsepower Hp
-t_e = 0.98 # transmission efficiency
-s_f = 1.7 # static friction coefficient between tire and asphalt
-g = 9.81 # gravity m / s^2
-c_dc = 0.85 # car drag coefficient
-A_c = 1.30 # frontal area of car m^2
-c_rr = 0.012 # rolling resistance coefficient
-
-# Parameters & Calculations
-N = 20  # Number of nodes
-air_density = 1.293  # kg/m^3
-AR = span / chord  # Aspect Ratio
-e = 0.20
-clalpha = clalpha_defined * AR / (2 + AR)
-e = 0.20
-e_oswald = 0.7
-elastic_offset = chord * e  # m
-JG = 1000 * (chord * 3/4 + e) * span / 2 / np.deg2rad(1)
-alpha_0_rad = np.deg2rad(10)
-
-theta_values = [alpha_0_rad*np.ones(N+1)]
-q_inf_values = [0]
-lift_distributions = [0*np.ones(N+1)]
-drag_distributions = [0*np.ones(N+1)]
-lift_areas = [0]
-drag_areas = [0]
-optimal_power = [0]
 
 def FEM_module(velocity):
     '''
@@ -257,7 +215,26 @@ def prePlot():
     return xp,yp,zp,dp,sp
     
 def Plots():
-      
+    
+    # plot index finder
+    
+    fnames = []
+    fnames.append(glob.glob('NACA0012_main_strain*.gif'))
+    fnames.append(glob.glob('NACA0012_main_displacement*.gif'))
+    fnames.append(glob.glob('NACA0012_main_data*.png'))
+    # fnames.append(glob.glob('NACA0012_displacement*.gif'))
+    
+    plot_index = []
+    for names in fnames: # for each plot
+        if len(names)==0:
+            names = [-1]
+        else:
+            for i in range(len(names)): # for each instance of a plot
+                if names[i][-5:-4].isdigit():
+                    names[i] = int(names[i][-5:-4])
+                else:
+                    names[i] = -1
+        plot_index.append(max(names)+1)
     
     def update_dp(i,zp,plot):
 
@@ -296,7 +273,8 @@ def Plots():
         ax1.set_xlabel('span')
         ax1.set_ylabel('chord')
         ax1.set_zlabel('height')        
-        
+    
+    print('Plotting Figure 1....')    
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(projection='3d')
     ax1.view_init(elev=10, azim=-15, roll=0)
@@ -311,7 +289,7 @@ def Plots():
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
     anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_main_displacement.gif', dpi=80, writer='pillow')
+    anim.save(f'NACA0012_main_displacement{plot_index[0]}.gif', dpi=80, writer='pillow')
     
     def update_sp(i,zp,plot):
 
@@ -350,7 +328,8 @@ def Plots():
         ax1.set_title(f"Strain \ntime: {time[i]:.1f} seconds, distance: {distance[i]:.1f}m, velocity: {velocity[i]:.1f}m/s")
         ax1.set_xlabel('span')
         ax1.set_ylabel('chord')        
-        
+    
+    print('Plotting Figure 2....')    
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(projection='3d')
     ax1.view_init(elev=10, azim=-15, roll=0)
@@ -365,7 +344,7 @@ def Plots():
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
     anim = FuncAnimation(fig1, update_sp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_main_strain.gif', dpi=80, writer='pillow')
+    anim.save(f'NACA0012_main_strain{plot_index[1]}.gif', dpi=80, writer='pillow')
     
     # # output/gui
     # plt.plot(velocity,lift_areas,label = 'Downforce')
@@ -375,6 +354,7 @@ def Plots():
     # plt.title('Aerodynamic Forces on Rear Wings')
     # plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
     
+    print('Plotting Figure 3....')    
     fig2,axs = plt.subplots(3,2)
     fig2.suptitle('Vehicle Motion')
     axs[0,0].plot(time,distance,label='Distance')
@@ -396,20 +376,82 @@ def Plots():
     axs[2,1].set(xlabel='time',ylabel='Optimal Power (Hp)')
     axs[2,1].grid()
     fig2.set_size_inches((15, 9))
-    fig2.savefig('NACA0012_main_data.png', dpi=80)
+    fig2.savefig(f'NACA0012_main_data{plot_index[2]}.png', dpi=80)
 
     
 if __name__ == '__main__':
+    
+    exec(open("Sim_Inputs.py").read())
+    print('Inputs Entered')
+    
+    param = []
+    for line in open('Input_Parameters.txt'):
+        param.append(eval(line))
+    print('Inputs Read')
+
+    # User Defined
+    alpha_0_deg = param[0] #10
+    velocity_initial = 0
+    clalpha_defined = 2 * np.pi
+    cd_0 = param[1] #0.008
+    chord = param[2] #0.30  # m
+    span = param[3] #1.00  # m
+
+    m = param[4] #798 # mass kg
+    d_w = param[5] #3.6 # wheelbasse m
+    r = param[6] #0.23 # tire radius m
+    p_e = 0 # engine brake horsepower Hp
+    p_max = param[7] #850 # maximum brake horsepower Hp
+    t_e = param[8] #0.98 # transmission efficiency
+    s_f = param[9] #1.7 # static friction coefficient between tire and asphalt
+    g = 9.81 # gravity m / s^2
+    c_dc = param[10] #0.85 # car drag coefficient
+    A_c = param[11] #1.30 # frontal area of car m^2
+    c_rr = param[12] #0.012 # rolling resistance coefficient
+
+    # Parameters & Calculations
+    N = 20  # Number of nodes
+    air_density = 1.293  # kg/m^3
+    AR = span / chord  # Aspect Ratio
+    e = 0.20
+    clalpha = clalpha_defined * AR / (2 + AR)
+    e = 0.20
+    e_oswald = 0.7
+    elastic_offset = chord * e  # m
+    JG = 1000 * (chord * 3/4 + e) * span / 2 / np.deg2rad(1)
+    alpha_0_rad = np.deg2rad(10)
+
+    airfoil = 'NACA0012.txt'
+    airfoil_center = (.45,0) # elastic axis
+    max_distance = 2000
+    time_step = .5 # s
+
+    theta_values = [alpha_0_rad*np.ones(N+1)]
+    q_inf_values = [0]
+    lift_distributions = [0*np.ones(N+1)]
+    drag_distributions = [0*np.ones(N+1)]
+    lift_areas = [0]
+    drag_areas = [0]
+    optimal_power = [0]     
+    print('Parameters Configured')
+    
+    
     time = [0]
     velocity = [velocity_initial]
     distance = [0]
     acceleration = [0]
+    print(f'Limit: Max Distance = {max_distance:.1f}m')
     while distance[-1] <= max_distance:
         time.append(time[-1] + time_step)
         FEM_module(velocity[-1])
         acceleration.append(ForcingFunction(velocity[-1],p_e))
         velocity.append(velocity[-1] + acceleration[-1] * time_step)
         distance.append(distance[-1] + velocity[-1] * time_step)
-       
-    xp,yp,zp,dp,sp = prePlot()  
+        print(f'Evaluated at time: {time[-1]:.1f}s, distance: {distance[-1]:.1f}m, velocity: {velocity[-1]:.1f}m/s, acceleration: {acceleration[-1]:.1f}m/s/s')
+    
+    print('Calculations complete. Preparing data for figures.')
+    xp,yp,zp,dp,sp = prePlot() 
+    print('Ready to Plot')
     Plots()
+    print('Plots Completed and Saved')
+    print('Program Complete')

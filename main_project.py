@@ -13,6 +13,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.colors import Normalize
 from matplotlib import cm
 import glob
+import shutil
 
 
 def FEM_module(velocity):
@@ -384,6 +385,19 @@ if __name__ == '__main__':
     exec(open("Sim_Inputs.py").read())
     print('Inputs Entered')
     
+    ParamText = glob.glob('Input_Parameters*.txt')
+    file_index = []
+    if len(ParamText)==0:
+        ParamText = [-1]
+    else:
+        for i in range(len(ParamText)): # for each instance of a plot
+            if ParamText[i][-5:-4].isdigit():
+                ParamText[i] = int(ParamText[i][-5:-4])
+            else:
+                ParamText[i] = -1
+    file_index.append(max(ParamText)+1)
+    shutil.copy('Input_Parameters.txt', f'Input_Parameters{file_index[0]}.txt')
+
     param = []
     for line in open('Input_Parameters.txt'):
         param.append(eval(line))

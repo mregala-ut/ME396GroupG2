@@ -430,7 +430,7 @@ def main():
     loop = QtCore.QEventLoop()
     MainWindow.destroyed.connect(loop.quit)
     loop.exec() # wait ...
-    print('Gui Finished')
+    # print('Gui Finished')
     # sys.exit(app.exec_())
     return ui
 

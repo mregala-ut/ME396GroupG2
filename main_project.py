@@ -290,7 +290,7 @@ def Plots():
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
     anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
-    anim.save(f'NACA0012_main_displacement{plot_index[0]}.gif', dpi=80, writer='pillow')
+    anim.save(f'NACA0012_main_displacement{plot_index[0]}.gif', dpi=dpi, writer='pillow')
     
     def update_sp(i,zp,plot):
 
@@ -345,7 +345,7 @@ def Plots():
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
     anim = FuncAnimation(fig1, update_sp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
-    anim.save(f'NACA0012_main_strain{plot_index[1]}.gif', dpi=80, writer='pillow')
+    anim.save(f'NACA0012_main_strain{plot_index[1]}.gif', dpi=dpi, writer='pillow')
     
     # # output/gui
     # plt.plot(velocity,lift_areas,label = 'Downforce')
@@ -377,7 +377,7 @@ def Plots():
     axs[2,1].set(xlabel='time',ylabel='Optimal Power (Hp)')
     axs[2,1].grid()
     fig2.set_size_inches((15, 9))
-    fig2.savefig(f'NACA0012_main_data{plot_index[2]}.png', dpi=80)
+    fig2.savefig(f'NACA0012_main_data{plot_index[2]}.png', dpi=dpi)
 
     
 if __name__ == '__main__':
@@ -439,6 +439,7 @@ if __name__ == '__main__':
     airfoil_center = (.45,0) # elastic axis
     max_distance = 2000
     time_step = .5 # s
+    dpi = 120
 
     theta_values = [alpha_0_rad*np.ones(N+1)]
     q_inf_values = [0]

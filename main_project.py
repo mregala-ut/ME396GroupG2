@@ -414,9 +414,11 @@ if __name__ == '__main__':
     c_dc = param[10] #0.85 # car drag coefficient
     A_c = param[11] #1.30 # frontal area of car m^2
     c_rr = param[12] #0.012 # rolling resistance coefficient
-
+    N = param[13] #20 # number of elements
+    time_step = param[14] #0.5 s 
+    max_distance = param[15] #2000 m
+    
     # Parameters & Calculations
-    N = 20  # Number of nodes
     air_density = 1.293  # kg/m^3
     AR = span / chord  # Aspect Ratio
     e = 0.20
@@ -429,8 +431,6 @@ if __name__ == '__main__':
 
     airfoil = 'NACA0012.txt'
     airfoil_center = (.45,0) # elastic axis
-    max_distance = 2000
-    time_step = .5 # s
     dpi = 120
 
     theta_values = [alpha_0_rad*np.ones(N+1)]

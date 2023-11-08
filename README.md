@@ -22,8 +22,9 @@ After finding the updated velocity, the program loops through time steps until t
 
 4) Output Figure Module: With all of the kinematic and force data calculated for each time step, this module creates visualizations. This includes graphs of distance, speed, acceleration, lift, drag, and optimal power over time. {br}
    Additionally, using an input NACA0012 surface, force distributions and deflections/strains of the wing are visualized in a 3-dimensional space in an animation. {br}
+   <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/NACA0012_main_data1.gif" width=40% height=40% align="center">
    <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/NACA0012_main_displacement1.gif" width=40% height=40% align="center">
-   <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/NACA0012_main_displacement1.gif" width=40% height=40% align="center">
+
    
 
 A high level view of the architecture of the integration between the modules can be seen below: {br}  

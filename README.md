@@ -15,7 +15,9 @@ Using compactly supported linear basis functions, the FEM module develops stiffn
 $[K]_{total} \theta = 0$ <br>  
 Using sympy, the unknown $\theta$ values are solved for. From this, lift and drag distributions as well as the total lift and drag can be calculated and returned.
 
-3) The performance module uses the car parameters, lift, drag, and velocities to determine the maximum engine power that can be utilized without tire slippage. After doing so, the net forces acting on the car can be determined and instantaneous accelerations returned. This acceleration is used to update the velocity and position of the vehicle.
+3) The performance module uses the car parameters, lift, drag, and velocities to determine the maximum engine power that can be utilized without tire slippage. After doing so, the net forces acting on the car can be determined and instantaneous accelerations returned. This acceleration is used to update the velocity and position of the vehicle. <br>  
+   $P_e \leq \frac{v}{\gamma}\mu_s(L+\frac{1}{2}mg)$ <br>  
+   $a = \frac{1}{m}\left [\frac{P_e\gamma}{v} - q_{\infty }C_{d_c} A_c - D_w - C_{rr}(L + mg) \right ]$
 
 After finding the updated velocity, the program loops through time steps until the desired time or position is met.
 

@@ -5,8 +5,8 @@ This projects intended goal is to evaluate and represent the performance of a ra
 
 To achieve this, the code has four main modules:
 
-1) Input GUI developed in QT Creator. This GUI allows modification of the characteristics of the rear wing, the car, and simulation parameters:
-[INSERT TABLE OR GUI EXAMPLE]
+1) Input GUI developed in QT Creator. This GUI allows modification of the characteristics of the rear wing, the car, and simulation parameters: <br>  
+<img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/input_params.png" width=30%>
   
 2) A finite element method (FEM) module to evaluate angular deflections due to moments created by a lift, offset from an elastic axis. This module uses a Bubnov–Galerkin approach to solve for deflections. The differential equation for the problem is: <br>  
 $GJ\theta'' + q_{\infty }cec_{l\alpha }\theta = 0$ <br>  

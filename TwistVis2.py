@@ -101,7 +101,7 @@ def output_function(span,chord,airfoil_center,init_angle,delta_angle):
         # mappable = plt.cm.ScalarMappable(cmap=cmap1, norm=norm1)
         # mappable.set_array([])  # This line is needed to make the colorbar work
         # colorbar = plt.colorbar(mappable, label='displacement')
-        ax1.set_title("Diaplacement")
+        ax1.set_title("Displacement")
         ax1.set_xlabel('span')
         ax1.set_ylabel('chord')
         ax1.set_zlabel('height')
@@ -128,13 +128,13 @@ def output_function(span,chord,airfoil_center,init_angle,delta_angle):
     ax1 = fig1.add_subplot(projection='3d')
     plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0])]
     anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(delta_angle)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_displacement3.gif', dpi=80, writer='pillow')
+    anim.save('NACA0012_A2.gif', dpi=80, writer='pillow')
     
     fig2 = plt.figure()
     ax2 = fig2.add_subplot(projection='3d')
     plot2 = [ax2.plot_surface(xp[0],yp[0],zp[0])]
     anim = FuncAnimation(fig2, update_sp, fargs=(zp,plot2), frames=np.arange(0,len(delta_angle)), interval=250,init_func=lambda: None)
-    anim.save('NACA0012_strain3.gif', dpi=80, writer='pillow')
+    anim.save('NACA0012_B2.gif', dpi=120, writer='pillow')
     
 
 if __name__ == '__main__':
@@ -148,13 +148,18 @@ if __name__ == '__main__':
     chord = 0.5
     airfoil_center = (0.25,0)
 
-    init_angle = -10
+    init_angle = -15
     x = np.linspace(-span/2/chord,span/2/chord)
     timesteps = 10
     delta_angle = []
     for i in range(timesteps):
-        delta_angle.append(np.cos(x*np.pi/span*chord)*10*(i/timesteps)) # nose up = positive
-        # delta_angle.append(np.sin(x*2*np.pi/span*chord)*10*(i/timesteps)) # nose up = positive
+        delta_angle.append(np.cos(x*np.pi/span*chord)*15*(i/timesteps)) # nose up = positive
+        # delta_angle.append(np.sin(x*2*np.pi/span*chord)*15*(i/timesteps)) # nose up = positive
         # delta_angle.append(np.sin(x*np.pi/2/span*chord)*45*(i/timesteps)) # nose up = positive
+    delta_angle.append(delta_angle[-1])
+    delta_angle.append(delta_angle[-1])
+    delta_angle.append(delta_angle[-1])
+    delta_angle.append(delta_angle[-1])
+    delta_angle.append(delta_angle[-1])
     del x
     output_function(span,chord,airfoil_center,init_angle,delta_angle)

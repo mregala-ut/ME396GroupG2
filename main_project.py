@@ -267,6 +267,11 @@ def Plots():
         ax1.set_ylabel('chord')
         ax1.set_zlabel('height')        
     
+    points = len(time)
+    GIF_duration = 10
+    GIF_interval = max(100,GIF_duration*1000//points)
+
+    
     print('Plotting Figure 1....')    
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(projection='3d')
@@ -281,7 +286,7 @@ def Plots():
     plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0],label='wing')]
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
-    anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
+    anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=GIF_interval,init_func=lambda: None)
     anim.save(f'NACA0012_main_displacement{plot_index[0]}.gif', dpi=dpi, writer='pillow')
     
     def update_sp(i,zp,plot):
@@ -336,7 +341,7 @@ def Plots():
     plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0],label='wing')]
     lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
     drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
-    anim = FuncAnimation(fig1, update_sp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=250,init_func=lambda: None)
+    anim = FuncAnimation(fig1, update_sp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=GIF_interval,init_func=lambda: None)
     anim.save(f'NACA0012_main_strain{plot_index[1]}.gif', dpi=dpi, writer='pillow')
     
     # # output/gui
@@ -455,6 +460,19 @@ if __name__ == '__main__':
         velocity.append(velocity[-1] + acceleration[-1] * time_step)
         distance.append(distance[-1] + velocity[-1] * time_step)
         print(f'Evaluated at time: {time[-1]:.1f}s, distance: {distance[-1]:.1f}m, velocity: {velocity[-1]:.1f}m/s, acceleration: {acceleration[-1]:.1f}m/s/s')
+    
+    print(f'Max Downforce: {max(lift_areas):.1f}N at {time[lift_areas.index(max(lift_areas))]:.1f}s')
+    print(f'Max Downforce per unit weight: {max(lift_areas)/m:.1f}N/kg at {time[lift_areas.index(max(lift_areas))]:.1f}s')
+    print(f'Max Drag: {max(drag_areas):.1f}N at {time[drag_areas.index(max(drag_areas))]:.1f}s')
+    print(f'Max Drag per unit weight: {max(drag_areas)/m:.1f}N/kg at {time[drag_areas.index(max(drag_areas))]:.1f}s')
+    print(f'Max acceleration: {max(acceleration):.1f}m/s/s at {time[acceleration.index(max(acceleration))]:.1f}s')
+    if p_max in optimal_power:
+        print(f'Max bHp Reached at {time[optimal_power.index(p_max)]:.1f}s')
+    else:
+        print('Max bHp not reached')
+    print(f'Reached max distance {max_distance}m at {time[-1]}s')
+    
+    
     
     print('Calculations complete. Preparing data for figures.')
     xp,yp,zp,dp,sp = prePlot() 

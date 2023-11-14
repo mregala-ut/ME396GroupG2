@@ -6,7 +6,7 @@ This projects intended goal is to evaluate and represent the performance of a ra
 To achieve this, the code has four main modules:
 
 1) Input GUI developed in QT Creator. This GUI allows modification of the characteristics of the rear wing, the car, and simulation parameters: <br>  
-<img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/input_params.png" width=30%>
+<img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/Figures/input_params.png" width=30%>
   
 2) A finite element method (FEM) module to evaluate angular deflections due to moments created by a lift, offset from an elastic axis. This module uses a Bubnov–Galerkin approach to solve for deflections. The differential equation for the problem is: <br>  
 $GJ\theta'' + q_{\infty }cec_{l\alpha }\theta = 0$ <br>  
@@ -25,11 +25,11 @@ After finding the updated velocity, the program loops through time steps until t
 4) Output Figure Module: With all of the kinematic and force data calculated for each time step, this module creates visualizations. This includes graphs of distance, speed, acceleration, lift, drag, and optimal power over time. <br>
    Additionally, using an input NACA0012 surface, force distributions and deflections/strains of the wing are visualized in a 3-dimensional space in an animation. <br>   
    
-   <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/NACA0012_main_data1.png" width=50%>
+   <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/Figures/NACA0012_main_data1.png" width=50%>
    
-   <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/NACA0012_main_displacement1.gif" width=50% height=50%>
+   <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/Figures/NACA0012_main_displacement1.gif" width=50% height=50%>
 
 
 A high level view of the architecture of the integration between the modules can be seen below: <br>  
 
-![Project Interface Chart](https://github.com/mregala-ut/ME396GroupG2/blob/main/Project_InterfaceChart.png?raw=true)
+![Project Interface Chart](https://github.com/mregala-ut/ME396GroupG2/blob/main/Figures/Project_InterfaceChart.png?raw=true)

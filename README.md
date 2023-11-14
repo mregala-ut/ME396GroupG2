@@ -19,6 +19,8 @@ Using sympy, the unknown $\theta$ values are solved for. From this, lift and dra
    $P_e \leq \frac{v}{\gamma}\mu_s(L+\frac{1}{2}mg)$ <br>  
    $a = \frac{1}{m}\left [\frac{P_e\gamma}{v} - q_{\infty }C_{d_c} A_c - D_w - C_{rr}(L + mg) \right ]$
 
+   <img src= "https://github.com/mregala-ut/ME396GroupG2/blob/main/Figures/parameters.png" width=50%>
+
 After finding the updated velocity, the program loops through time steps until the desired time or position is met.
 
 

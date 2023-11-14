@@ -94,16 +94,6 @@ def FEM_module(velocity):
     drag_area = np.trapz(drag_distro_elastic,np.linspace(0, span, N + 1))
     drag_areas.append(drag_area)
 
-# if __name__ == '__main__':
-#     velocities = range(0,101,10)
-#     for velocity in velocities:
-#         FEM_module(velocity)
-#     plt.plot(velocities,lift_areas,label = 'Downforce')
-#     plt.plot(velocities,drag_areas,label = 'Drag')
-#     plt.xlabel('Velocity (m/s)')
-#     plt.ylabel('Aerodynamic Force (N)')
-#     plt.title('Aerodynamic Forces on Rear Wings')
-#     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
 def ForcingFunction(velocity,p_e):
     #Power for initial condition

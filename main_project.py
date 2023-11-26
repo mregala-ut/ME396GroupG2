@@ -110,7 +110,7 @@ def ForcingFunction(velocity,p_e):
         acceleration = (1/m)*((745.7*p_e*t_e/velocity)-0.5*(c_dc*A_c*air_density*(velocity**2))-drag_areas[-1]-c_rr*(lift_areas[-1] + m*g))
     return acceleration
 
-def prePlot():
+def prePlot(): # convert twist data into plottable points for a wing
     vals = []
     for line in open(airfoil):
         n = line.strip().split(' ')  # intake and split by csv
@@ -131,7 +131,7 @@ def prePlot():
         slope[0] = (angle[1]-angle[0])/(x[1]-x[0])
         slope[-1] = (angle[-1]-angle[-2])/(x[-1]-x[-2])
         
-        
+        # function to rotate inputted airfoil for plot
         def angle_transform(x,y,section_angle,airfoil_center,slope):
             from numpy import cos, sin
             def transform(x,y,point_angle):
@@ -200,13 +200,13 @@ def prePlot():
 def Plots():
     
     # plot index finder
-    
     fnames = []
     fnames.append(glob.glob('NACA0012_main_strain*.gif'))
     fnames.append(glob.glob('NACA0012_main_displacement*.gif'))
     fnames.append(glob.glob('NACA0012_main_data*.png'))
     # fnames.append(glob.glob('NACA0012_displacement*.gif'))
     
+    # create new plots with new index number
     plot_index = []
     for names in fnames: # for each plot
         if len(names)==0:
@@ -219,8 +219,8 @@ def Plots():
                     names[i] = -1
         plot_index.append(max(names)+1)
     
+    # displacement gif update function
     def update_dp(i,zp,plot):
-
         # colormap
         norm1 = Normalize(vmin=0,vmax=dp[-1].max())
         cmap1 = plt.get_cmap('jet')
@@ -228,30 +228,23 @@ def Plots():
         plot[0].remove()
         plot[0] = ax1.plot_surface(xp[i],yp[i],zp[i],facecolors=colors1,label = 'wing')
         
-        # lift
+        # lift (offset from origin/axes for visuals)
         lift.set_data(xp[i].T[0], 0.25*np.ones(len(xp[i].T[0])))
         if all(lift_distributions[i]==0):
             lift.set_3d_properties(lift_distributions[i]+.25)
         else:
-            # lift_norm = (lift_distributions[i]-lift_distributions[i].min())
-            # lift_norm = lift_norm/lift_norm.max()*.75+.25
             lift.set_3d_properties((lift_distributions[i]/lift_distributions[-1].max())**5+.25)
         
-        # drag
+        # drag (offset from origin/axes for visuals)
         drag_temp = drag_distributions[i]
         if all(drag_distributions[i]==0):
             drag_temp = drag_distributions[i]+1.125
         else:
-            # lift_norm = (lift_distributions[i]-lift_distributions[i].min())
-            # lift_norm = lift_norm/lift_norm.max()*.75+.25
             drag_temp = (drag_distributions[i]/drag_distributions[-1].max())**5+1.125
         drag.set_data(xp[i].T[0], drag_temp)
         drag.set_3d_properties(0*np.ones(len(xp[i].T[0])))
         
         ax1.axis('equal')
-        # mappable = plt.cm.ScalarMappable(cmap=cmap1, norm=norm1)
-        # mappable.set_array([])  # This line is needed to make the colorbar work
-        # colorbar = plt.colorbar(mappable, label='displacement')
         ax1.set_title(f"Displacement \ntime: {time[i]:.1f} seconds, distance: {distance[i]:.1f}m, velocity: {velocity[i]:.1f}m/s")
         ax1.set_xlabel('span')
         ax1.set_ylabel('chord')
@@ -263,51 +256,44 @@ def Plots():
 
     
     print('Plotting Figure 1....')    
-    fig1 = plt.figure()
-    ax1 = fig1.add_subplot(projection='3d')
-    ax1.view_init(elev=10, azim=-15, roll=0)
+    fig1 = plt.figure() # figure
+    ax1 = fig1.add_subplot(projection='3d') # 3d plot
+    ax1.view_init(elev=10, azim=-15, roll=0) # set viewpoint
     
-    norm1 = Normalize(vmin=0,vmax=dp[-1].max())
+    norm1 = Normalize(vmin=0,vmax=dp[-1].max()) # set color scheme
     cmap1 = plt.get_cmap('jet')
     mappable = plt.cm.ScalarMappable(cmap=cmap1, norm=norm1)
     # mappable.set_array([])  # This line is needed to make the colorbar work
     colorbar = plt.colorbar(mappable, label='displacement',ax=ax1)
     
-    plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0],label='wing')]
-    lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
-    drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
+    plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0],label='wing')] # 3d plot
+    lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift') # lift line
+    drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift') # drag line
     anim = FuncAnimation(fig1, update_dp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=GIF_interval,init_func=lambda: None)
     anim.save(f'NACA0012_main_displacement{plot_index[0]}.gif', dpi=dpi, writer='pillow')
     
+    # strain gif update function
     def update_sp(i,zp,plot):
 
         # colormap
         norm1 = Normalize(vmin=0,vmax=sp[-1].max())
         cmap1 = plt.get_cmap('jet')
         colors1 = cmap1(norm1(sp[i]))
-        # if i == 0:
-        #     mappable = plt.cm.ScalarMappable(cmap=cmap1, norm=norm1)
-        #     # mappable.set_array([])  # This line is needed to make the colorbar work
-        #     colorbar = plt.colorbar(mappable, label='displacement')
         plot[0].remove()
         plot[0] = ax1.plot_surface(xp[i],yp[i],zp[i],facecolors=colors1,label = 'wing')
         
-        # lift
+        # lift (offset from origin/axes for visuals)
         lift.set_data(xp[i].T[0], 0.25*np.ones(len(xp[i].T[0])))
         if all(lift_distributions[i]==0):
             lift.set_3d_properties(lift_distributions[i]+.25)
         else:
-            # lift_norm = (lift_distributions[i]-lift_distributions[i].min())
-            # lift_norm = lift_norm/lift_norm.max()*.75+.25
             lift.set_3d_properties((lift_distributions[i]/lift_distributions[-1].max())**5+.25)
         
-        # drag
+        # drag (offset from origin/axes for visuals)
         drag_temp = drag_distributions[i]
         if all(drag_distributions[i]==0):
             drag_temp = drag_distributions[i]+1.125
         else:
-            # lift_norm = (lift_distributions[i]-lift_distributions[i].min())
-            # lift_norm = lift_norm/lift_norm.max()*.75+.25
             drag_temp = (drag_distributions[i]/drag_distributions[-1].max())**5+1.125
         drag.set_data(xp[i].T[0], drag_temp)
         drag.set_3d_properties(0*np.ones(len(xp[i].T[0])))
@@ -318,31 +304,23 @@ def Plots():
         ax1.set_ylabel('chord')        
     
     print('Plotting Figure 2....')    
-    fig1 = plt.figure()
-    ax1 = fig1.add_subplot(projection='3d')
-    ax1.view_init(elev=10, azim=-15, roll=0)
+    fig1 = plt.figure() # figure
+    ax1 = fig1.add_subplot(projection='3d') # 3d plot
+    ax1.view_init(elev=10, azim=-15, roll=0) # viewpoint
     
-    norm1 = Normalize(vmin=0,vmax=sp[-1].max())
+    norm1 = Normalize(vmin=0,vmax=sp[-1].max()) # colormap
     cmap1 = plt.get_cmap('jet')
     mappable = plt.cm.ScalarMappable(cmap=cmap1, norm=norm1)
     # mappable.set_array([])  # This line is needed to make the colorbar work
     colorbar = plt.colorbar(mappable, label='strain',ax=ax1)
     
-    plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0],label='wing')]
-    lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift')
-    drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift')
+    plot1 = [ax1.plot_surface(xp[0],yp[0],zp[0],label='wing')] # 3d plot
+    lift, = ax1.plot(xp[0].T[0],0.25*np.ones(len(xp[0].T[0])),lift_distributions[0],color = 'green',label = 'lift') # lift
+    drag, = ax1.plot(xp[0].T[0],drag_distributions[0],0*np.ones(len(xp[0].T[0])),color = 'red',label = 'lift') # drag
     anim = FuncAnimation(fig1, update_sp, fargs=(zp,plot1), frames=np.arange(0,len(theta_values)), interval=GIF_interval,init_func=lambda: None)
     anim.save(f'NACA0012_main_strain{plot_index[1]}.gif', dpi=dpi, writer='pillow')
     
-    # # output/gui
-    # plt.plot(velocity,lift_areas,label = 'Downforce')
-    # plt.plot(velocity,drag_areas,label = 'Drag')
-    # plt.xlabel('Velocity (m/s)')
-    # plt.ylabel('Aerodynamic Force (N)')
-    # plt.title('Aerodynamic Forces on Rear Wings')
-    # plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-    
-    print('Plotting Figure 3....')    
+    print('Plotting Figure 3....') # plot remaining data
     fig2,axs = plt.subplots(3,2)
     fig2.suptitle('Vehicle Motion')
     axs[0,0].plot(time,distance,label='Distance')
@@ -369,9 +347,11 @@ def Plots():
     
 if __name__ == '__main__':
     
+    # Open input gui
     exec(open("Sim_Inputs.py").read())
     print('Inputs Entered')
     
+    # Make a copy of input file with a new index
     ParamText = glob.glob('Input_Parameters*.txt')
     file_index = []
     if len(ParamText)==0:
@@ -385,11 +365,13 @@ if __name__ == '__main__':
     file_index.append(max(ParamText)+1)
     shutil.copy('Input_Parameters.txt', f'Input_Parameters{file_index[0]}.txt')
 
+    # Read input gui output file
     param = []
     for line in open('Input_Parameters.txt'):
         param.append(eval(line))
     print('Inputs Read')
-
+    
+    # Set Parameters
     # User Defined
     alpha_0_deg = param[0] #10
     velocity_initial = 0
@@ -428,6 +410,7 @@ if __name__ == '__main__':
     airfoil_center = (.45,0) # elastic axis
     dpi = 120
 
+    # Initiate data capture lists
     theta_values = [alpha_0_rad*np.ones(N+1)]
     q_inf_values = [0]
     lift_distributions = [0*np.ones(N+1)]
@@ -437,13 +420,12 @@ if __name__ == '__main__':
     optimal_power = [0]     
     print('Parameters Configured')
     
-    
     time = [0]
     velocity = [velocity_initial]
     distance = [0]
     acceleration = [0]
     print(f'Limit: Max Distance = {max_distance:.1f}m')
-    while distance[-1] <= max_distance:
+    while distance[-1] <= max_distance: # iteration loop
         time.append(time[-1] + time_step)
         FEM_module(velocity[-1])
         acceleration.append(ForcingFunction(velocity[-1],p_e))
@@ -451,6 +433,7 @@ if __name__ == '__main__':
         distance.append(distance[-1] + velocity[-1] * time_step)
         print(f'Evaluated at time: {time[-1]:.1f}s, distance: {distance[-1]:.1f}m, velocity: {velocity[-1]:.1f}m/s, acceleration: {acceleration[-1]:.1f}m/s/s')
     
+    # Print key data points
     print(f'Max Downforce: {max(lift_areas):.1f}N at {time[lift_areas.index(max(lift_areas))]:.1f}s')
     print(f'Max Downforce per unit weight: {max(lift_areas)/m:.1f}N/kg at {time[lift_areas.index(max(lift_areas))]:.1f}s')
     print(f'Max Drag: {max(drag_areas):.1f}N at {time[drag_areas.index(max(drag_areas))]:.1f}s')
@@ -463,7 +446,7 @@ if __name__ == '__main__':
     print(f'Reached max distance {max_distance}m at {time[-1]}s')
     
     
-    
+    # Plot
     print('Calculations complete. Preparing data for figures.')
     xp,yp,zp,dp,sp = prePlot() 
     print('Ready to Plot')
